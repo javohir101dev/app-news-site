@@ -4,12 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import newssite.entity.enums.Huquq;
+import newssite.entity.enums.Permission;
 import newssite.entity.template.AbstractEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +36,7 @@ public class User extends AbstractEntity implements UserDetails {
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Lavozim lavozim;
+    private Role role;
 
     private boolean isAccountNonExpired = true;
 
@@ -47,13 +46,18 @@ public class User extends AbstractEntity implements UserDetails {
 
     private boolean isEnabled;
 
+    public User(String fullName, String username, String password, Role role, boolean isEnabled) {
+        this.fullName = fullName;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.isEnabled = isEnabled;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
-
-        List<Huquq> huquqList = this.lavozim.getHuquqList();
-
-        Set<SimpleGrantedAuthority> authorities = huquqList.stream()
+        List<Permission> permissionList = this.role.getPermissionList();
+        Set<SimpleGrantedAuthority> authorities = permissionList.stream()
                 .map(h -> new SimpleGrantedAuthority(h.name()))
                 .collect(Collectors.toSet());
 

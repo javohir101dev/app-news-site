@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import newssite.entity.enums.Huquq;
+import newssite.entity.enums.Permission;
 import newssite.entity.template.AbstractEntity;
 
 import javax.persistence.*;
@@ -15,12 +15,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Lavozim extends AbstractEntity {
+public class Role extends AbstractEntity {
 
+    @Column(unique = true, nullable = false)
     private String name; //ADMIN, USER, OTHER
 
     @ElementCollection
-    private List<Huquq> huquqList;
+    @Enumerated(EnumType.STRING)
+    private List<Permission> permissionList;
+
+    @Column(columnDefinition = "text")
+    private String description;
 
 
 
